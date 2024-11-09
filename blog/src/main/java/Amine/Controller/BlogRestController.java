@@ -1,5 +1,8 @@
-package Amine;
+package Amine.Controller;
 
+import Amine.Entite.Blog;
+import Amine.Entite.BlogDTO;
+import Amine.Service.IBlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -11,56 +14,73 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/blog")
-@CrossOrigin(origins = "http://localhost:4200")
 public class BlogRestController {
+
     @Autowired
     private IBlogService iBlogService;
 
-
+    // Add a new blog
     @PostMapping("/addBlog")
-    public Blog AddBlog(@RequestBody Blog blog){
-        return iBlogService.addOnlyBlog(blog);
+    public Blog addBlog(@RequestBody BlogDTO blogDTO) {
+        return iBlogService.addOnlyBlog(blogDTO);
     }
 
+    // Get all unapproved blogs
     @GetMapping("/getAllUnapprovedBlogs")
-    public List<Blog> showAllUnapprovedBlogs(){
+    public List<BlogDTO> showAllUnapprovedBlogs() {
         return iBlogService.getAllUnaprovedBlogs();
-    } @GetMapping("/getAllBlogs")
-    public List<Blog> showAllBlogs(){
+    }
+
+    // Get all blogs
+    @GetMapping("/getAllBlogs")
+    public List<BlogDTO> showAllBlogs() {
         return iBlogService.getAllBlogs();
     }
-    @GetMapping("/getAprovedBlogs")
-    public List<Blog> showAllAprovedBlogs(){
+
+    // Get all approved blogs
+    @GetMapping("/getApprovedBlogs")
+    public List<BlogDTO> showAllApprovedBlogs() {
         return iBlogService.getAllAprovedBlogs();
     }
+
+    // Approve a blog by its ID
     @PutMapping("/approveBlog/{id}")
-    public Blog approveBlog(@PathVariable("id") String id){
+    public Blog approveBlog(@PathVariable("id") String id) {
         return iBlogService.ApproveBlog(id);
     }
+
+    // Approve all unapproved blogs
     @PutMapping("/approveAll")
-    public List<Blog> approveAllBlogs(){
+    public List<BlogDTO> approveAllBlogs() {
         return iBlogService.ApproveAllBlogs();
     }
+
+    // Get blog details by ID
     @GetMapping("/getDetailsBlog/{id}")
-    public Blog detailsBlog(@PathVariable("id") String id){
+    public Blog getBlogDetails(@PathVariable("id") String id) {
         return iBlogService.detailsBlog(id);
     }
-    @PutMapping("/modifierBlog/{id}")
-    public Blog modifierBlog(@RequestBody Blog blog, @PathVariable ("id") String id){
-        return iBlogService.modifierBlog(blog,id);
+
+    // Modify an existing blog by ID
+    @PutMapping("/modifyBlog/{id}")
+    public Blog modifyBlog(@RequestBody BlogDTO blogDTO, @PathVariable("id") String id) {
+        return iBlogService.modifierBlog(blogDTO, id);
     }
-    @DeleteMapping("deleteBlog/{id}")
-    public String deleteBlog(@PathVariable ("id") String id){
+
+    // Delete a blog by ID
+    @DeleteMapping("/deleteBlog/{id}")
+    public String deleteBlog(@PathVariable("id") String id) {
         iBlogService.deleteBlog(id);
         return "Blog Deleted";
     }
-    //upload image
-    @PostMapping("/upload/{id}")
-    public Blog handleFileUpload(@RequestParam("photo") MultipartFile file,@PathVariable("id") String blogCode) {
 
-        return iBlogService.storeFile(file,blogCode);
+    // Upload image for the blog
+    @PostMapping("/upload/{id}")
+    public Blog handleFileUpload(@RequestParam("photo") MultipartFile file, @PathVariable("id") String blogCode) {
+        return iBlogService.storeFile(file, blogCode);
     }
-    //affichage image
+
+    // Download image for the blog
     @GetMapping("/download/{fileName}")
     public ResponseEntity<Resource> downloadFile(@PathVariable("fileName") String fileName) {
         Resource resource = iBlogService.loadFileAsResource(fileName);
@@ -68,6 +88,4 @@ public class BlogRestController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
-
 }
-

@@ -1,12 +1,16 @@
-package Amine;
+package Amine.Entite;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.type.descriptor.java.ArrayJavaType;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -31,4 +35,7 @@ public class Blog {
     private Boolean status;
 
     private String photo;
-}
+
+    private String iduser;
+    @ElementCollection
+    private List<String> idinteractions = new ArrayList<>();}
