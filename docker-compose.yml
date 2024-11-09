@@ -1,0 +1,30 @@
+version: "3.3"
+services:  
+
+
+  blog:
+      build: D:\5 eme\app-web-distri\ProjetMicro\Micro\blog
+      environment:
+      - eureka.client.serviceUrl.defaultZone=http://discovery:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://docker-mysql_1:3306/jobs?autoReconnect=true&useSSL=false   
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=
+      ports:
+      - "8081:8081"
+      image: "blog-service"
+      depends_on:
+
+      - docker-mysql_1
+
+  docker-mysql_1:
+    image: "mysql:5.6"
+    environment:
+      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_DATABASE=jobs
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - 3306:3306
+
+
+
+
