@@ -1,0 +1,14 @@
+Amine\Config\AppConfig.class
+Amine\Controller\BlogRestController.class
+Amine\Entite\FaculteDTO.class
+Amine\Service\UserService.class
+Amine\Repository\BlogRepository.class
+Amine\Entite\InteractionsDTO.class
+Amine\Entite\BlogDTO.class
+Amine\Entite\RoleDTO.class
+Amine\Service\BlogService.class
+Amine\Service\IBlogService.class
+Amine\BlogApplication.class
+Amine\Service\InteractionsService.class
+Amine\Entite\Blog.class
+Amine\Entite\UserDTO.class
