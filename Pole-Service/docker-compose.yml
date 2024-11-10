@@ -1,0 +1,65 @@
+version: '2.2'
+networks:
+  my-network:
+    driver: bridge
+
+services:
+
+  mongodb:
+    networks:
+      - my-network
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=example
+
+  eureka:
+    networks:
+      - my-network
+    image: "ghadamejrii/eureka:latest"
+    hostname: eureka
+    container_name: eureka
+    ports:
+      - "8761:8761"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+
+  pole-service:
+
+    networks:
+      - my-network
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pole-service
+
+    ports:
+      - "8089:8089"
+    environment:
+      - SPRING_APPLICATION_NAME=Pole-Service
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=example
+      - SPRING_DATA_MONGODB_HOST=mongodb
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SERVER_PORT=8089
+      - SPRING_CLOUD_CONFIG_ENABLED=false
+      - EUREKA_INSTANCE_PREFER_IP_ADDRESS=true
+      - DEBUG=true
+      - EUREKA_INSTANCE_HOSTNAME=Pole-service
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=true
+      - EUREKA_CLIENT_FETCH_REGISTRY=true
+      - EUREKA_INSTANCE_LEASE_RENEWAL_INTERVAL_IN_SECONDS=30
+      - EUREKA_INSTANCE_LEASE_EXPIRATION_DURATION_IN_SECONDS=90
+    depends_on:
+      - mongodb
+      - eureka
+
+volumes:
+  mongo_data:
+    driver: local
