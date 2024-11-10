@@ -1,0 +1,64 @@
+version: "3.3"
+services:  
+  discovery:
+    
+    ports:
+      - "8761:8761" 
+    image: "oussemamj/eureka:latest" 
+
+  mongodb:
+    image: "mongo:4.4"  # Utiliser l'image MongoDB
+    ports:
+      - "27017:27017"
+    environment:
+      - spring.data.mongodb.host=mongodb
+      - spring.data.mongodb.port=27017
+      - spring.data.mongodb.database=CourzeloDB_MS
+  Cour:
+      environment:
+      - eureka.client.serviceUrl.defaultZone=http://discovery:8761/eureka/
+      ports:
+      - "1312:1312"
+      image: "oussemamj/cours:latest"
+      depends_on:
+      - discovery
+      - mongodb
+  apigateway:
+    
+    image: "oussemamj/apigateway:latest"
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://discovery:8761/eureka/
+    ports:
+      - "3333:3333"
+    depends_on:
+      - discovery
+  usermanagement:
+      #build: C:\Users\asus\Desktop\Microservice - Copie\Microservice-main
+      environment:
+      - eureka.client.serviceUrl.defaultZone=http://discovery:8761/eureka/
+      - spring.data.mongodb.host=mongodb
+      - spring.data.mongodb.port=27017
+      - spring.data.mongodb.database=CourzeloDB_MS
+      ports:
+      - "8282:8282"
+      image: "oussemamj/courzeloproject"  # Nom d'image en minuscule
+      depends_on:
+      - discovery
+      - mongodb
+  domaine:
+    #build: C:\Users\asus\Desktop\Microservice - Copie\domaine
+    image: "oussemamj/domains:latest"  
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://discovery:8761/eureka/
+      - spring.data.mongodb.host=mongodb
+      - spring.data.mongodb.port=27017
+      - spring.data.mongodb.database=CourzeloDB_MS
+    ports:
+      - "9090:9090"
+    depends_on:
+      - discovery   
+      - mongodb
+ 
+    
+
+
