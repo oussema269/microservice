@@ -1,0 +1,32 @@
+services:
+  
+  discovery:
+   # build: C:\Users\ASUS\Desktop\MicroServiceProject\DiscoveryServerProject
+    ports:
+      - "8761:8761" 
+    image: "youssefkchaou/eureka:latest" 
+  GateWay:
+   # build: C:\Users\ASUS\Desktop\MicroServiceProject\GateWay_Project_Ms
+    ports:
+      - "8083:8083" 
+    image: "youssefkchaou/gateway" 
+  
+  usermanagement:
+   # build: C:\Users\ASUS\Desktop\MicroServiceProject/CourzeloProject
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://discovery:8761/eureka/
+      - spring.data.mongodb.host=mongodb
+      - spring.data.mongodb.port=27017
+      - spring.data.mongodb.database=CourzeloDB_MS
+    ports:
+      - "8282:8282"
+    image: "youssefkchaou/usermanagement"  # Nom d'image en minuscule
+    depends_on:
+      - discovery
+      - mongodb
+  
+  mongodb:
+    image: mongo:latest
+    ports:
+     - "27017:27017"
+
